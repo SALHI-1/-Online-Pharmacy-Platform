@@ -1,0 +1,74 @@
+security:
+    password_hashers:
+        App\Entity\Admine:
+            algorithm: auto
+        App\Entity\Client:
+            algorithm: auto
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+    
+    providers:
+        admin_provider:
+            entity:
+                class: App\Entity\Admine
+                property: email
+        client_provider:
+            entity:
+                class: App\Entity\Client
+                property: email
+    
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        # Placer le firewall client avant main
+        client:
+            pattern: ^/client
+            provider: client_provider
+            custom_authenticator: App\Security\ClientAuthenticator
+            entry_point: App\Security\ClientAuthenticator
+            form_login:
+                login_path: app_client_login
+                check_path: app_client_login
+                default_target_path: app_client_dashboard
+            logout:
+                path: app_client_logout
+                target: app_client_login
+                invalidate_session: true
+
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800
+                path: /client
+
+        # Firewall main pour l'admin après client
+        main:
+            pattern: ^/admin
+            lazy: true
+            provider: admin_provider
+            custom_authenticator: App\Security\LoginAuthenticator
+            entry_point: App\Security\LoginAuthenticator
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                enable_csrf: true 
+                default_target_path: app_medicament
+            logout:
+                path: app_logout
+                target: app_login
+                invalidate_session: true
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800
+                path: /admin
+
+    access_control:
+        # Routes publiques
+        - { path: ^/client/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/client/register$, roles: PUBLIC_ACCESS }
+        - { path: ^/client/dashboard$, roles: PUBLIC_ACCESS }
+        - { path: ^/admin/login$, roles: PUBLIC_ACCESS }
+        
+        # Routes protégées
+        - { path: ^/client, roles: ROLE_CLIENT }
+        - { path: ^/admin, roles: ROLE_ADMIN }

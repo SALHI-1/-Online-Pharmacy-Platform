@@ -1,0 +1,150 @@
+{% extends 'homeClientBase.html.twig' %}
+
+{% block title %}Nos Médicaments{% endblock %}
+
+{% block body %}
+{% for message in app.flashes('success') %}
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+        {{ message }}
+    </div>
+{% endfor %}
+
+<div x-data="{ 
+    showModal: false,
+    selectedMedicament: null,
+    openModal(medicament) {
+        this.selectedMedicament = medicament;
+        this.showModal = true;
+    }
+}" class="min-h-screen bg-gray-100 py-8">
+    <!-- Recherche et filtre -->
+    <div class="container mx-auto px-4 mb-6">
+        <form method="get" action="{{ path('app_client_medicament') }}" class="flex space-x-4">
+            <input type="text" name="search" value="{{ app.request.query.get('search') }}" class="px-4 py-2 border rounded-lg w-full sm:w-1/3" placeholder="Recherche par nom...">
+            <select name="type" class="px-4 py-2 border rounded-lg">
+                <option value="">Tous les types</option>
+                <option value="En vente libre" {% if app.request.query.get('type') == 'En vente libre' %}selected{% endif %}>En vente libre</option>
+                <option value="Prescription obligatoire" {% if app.request.query.get('type') == 'Prescription obligatoire' %}selected{% endif %}>Prescription obligatoire</option>
+            </select>
+            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg">Rechercher</button>
+        </form>
+    </div>
+
+    <!-- Médicaments listés sous forme de cartes -->
+    <div class="container mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
+        {% for medicament in medicaments %}
+            <div class="bg-white shadow-xl rounded-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl">
+                <div class="relative">
+                    <img src="{{ asset('uploads/medicaments/' ~ medicament.image) }}" alt="{{ medicament.nom }}" class="w-full h-48 object-cover transition-transform duration-500 ease-in-out transform hover:scale-110">
+                    <span class="absolute top-4 right-4 bg-opacity-70 text-white px-3 py-1 rounded-full text-xs font-semibold bg-blue-500">{{ medicament.type }}</span>
+                </div>
+
+                <div class="p-6">
+                    <h3 class="text-2xl font-semibold text-blue-600 mb-2 hover:text-blue-700 transition-colors">{{ medicament.nom }}</h3>
+                    <p class="text-lg text-gray-600 mb-1">Créé par: <span class="font-medium text-gray-800">{{ medicament.createur }}</span></p>
+                    <p class="text-lg font-bold text-gray-900 mb-2">Prix: {{ medicament.prix }} €</p>
+                    
+                    <div class="flex justify-between items-center">
+                        {% if medicament.type == 'En vente libre' %}
+                            <button 
+                                class="bg-orange-500 text-white px-6 py-2 rounded-lg mt-4 w-full hover:bg-orange-600 transition-colors"
+                                onclick="window.location.href='{{ path('app_panier_ajouter', {id: medicament.id}) }}'">
+                                Ajouter au Panier
+                            </button>
+                        {% else %}
+                            <button 
+                                @click="openModal({
+                                    id: {{ medicament.id }}, <!-- Retirez les guillemets -->
+                                    nom: '{{ medicament.nom }}'
+                                })"
+                                class="bg-blue-500 text-white px-6 py-2 rounded-lg mt-4 w-full hover:bg-blue-600 transition-colors">
+                                Commander
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-span-4 text-center text-gray-500">Aucun médicament trouvé.</div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    <div class="container mx-auto px-4 mt-8">
+        {{ knp_pagination_render(medicaments) }}
+    </div>
+
+    <!-- Modal (maintenant en dehors de la boucle) -->
+    <div x-show="showModal" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 transform scale-90"
+         x-transition:enter-end="opacity-100 transform scale-100"
+         x-transition:leave="transition ease-in duration-300"
+         x-transition:leave-start="opacity-100 transform scale-100"
+         x-transition:leave-end="opacity-0 transform scale-90"
+         @click.away="showModal = false"
+         @keydown.escape.window="showModal = false"
+         class="fixed inset-0 z-50 overflow-y-auto"
+         style="display: none;">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Overlay -->
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+
+            <!-- Modal panel -->
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mt-3 text-center sm:mt-0 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4" x-text="'Commander ' + selectedMedicament?.nom"></h3>
+                            
+                            <form method="POST" action="{{ path('app_client_commande_speciale') }}" enctype="multipart/form-data">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('commande_speciale') }}">
+                            <!-- Médicament ID caché -->
+                                    <input type="hidden" 
+                                            name="medicament_id" 
+                                        :value="selectedMedicament?.id">                                
+                                <!-- Attestation Médicale -->
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Attestation Médicale (PDF uniquement) :</label>
+                                    <input type="file" 
+                                           name="attestationMedicale" 
+                                           accept=".pdf"
+                                           class="w-full border rounded p-2" 
+                                           required>
+                                </div>
+
+                                <!-- Quantité -->
+                                <div class="mb-6">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Quantité :</label>
+                                    <input type="number" 
+                                           name="quantite" 
+                                           class="w-full border rounded p-2" 
+                                           min="1" 
+                                           max="2" 
+                                           value="1"
+                                           required>
+                                </div>
+
+                                <!-- Boutons -->
+                                <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                                    <button type="submit" 
+                                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                        Valider la commande
+                                    </button>
+                                    <button type="button" 
+                                            @click="showModal = false"
+                                            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">
+                                        Annuler
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

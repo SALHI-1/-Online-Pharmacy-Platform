@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Pharmacie{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
+
+</head>
+<body class="bg-gray-100">
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md">
+        <div class="container mx-auto flex justify-between items-center p-4">
+        <!-- Logo animé -->
+        <div class="flex items-center space-x-2">
+            <img src="{{ asset('images/pharmacie_img.png') }}" alt="Logo Pharmacie" class="h-12 w-20">
+                    <h1 class="text-xl font-bold text-green-600">EL NOUR</h1>
+</div>
+            
+            <ul class="flex space-x-6">
+                <li><a href="{{ path('app_client_dashboard') }}" class="hover:text-blue-500">Accueil</a></li>
+                <li><a href="{{ path('app_client_medicament') }}" class="protected-link hover:text-blue-500">Nos Médicaments</a></li>
+                <li><a href="{{ path('app_panier') }}" class="protected-link hover:text-blue-500">Mon panier</a></li>
+            </ul>
+
+            <!-- Profil Dropdown -->
+            <div class="relative">
+                <button id="profile-btn" class="text-2xl">👤</button>
+                <div id="profile-menu" class="hidden absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-48 z-10">
+                    {% if app.user %}
+                        <a href="{{ path('app_client_logout') }}" class="block px-4 py-2 hover:bg-gray-200">Se Déconnecter</a>
+                        <a href="{{path('app_profile')}}" class="block px-4 py-2 hover:bg-gray-200">Profil</a>
+                    {% else %}
+                        <a href="{{ path('app_client_login') }}" class="block px-4 py-2 hover:bg-gray-200">Se Connecter</a>
+                        <a href="{{ path('app_client_register') }}" class="block px-4 py-2 hover:bg-gray-200">S'inscrire</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenu de la page -->
+    <div class="container mx-auto p-6">
+        {% block body %}{% endblock %}
+    </div>
+
+    <script>
+        document.getElementById('profile-btn').addEventListener('click', function() {
+            document.getElementById('profile-menu').classList.toggle('hidden');
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const isAuthenticated = {{ app.user ? 'true' : 'false' }};
+            
+            document.querySelectorAll(".protected-link").forEach(link => {
+                link.addEventListener("click", function (event) {
+                    if (!isAuthenticated) {
+                        event.preventDefault(); // Bloque la navigation
+                        alert("Vous devez vous connecter d'abord !");
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

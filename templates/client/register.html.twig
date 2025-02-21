@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription Client{% endblock %}
+
+{% block body %}
+<div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4">
+    <!-- Titre -->
+    <h1 class="text-3xl font-semibold text-gray-700 mb-8">Inscription Client</h1>
+
+    <!-- Conteneur principal -->
+    <div class="max-w-3xl w-full bg-white shadow-lg rounded-xl overflow-hidden p-8">
+        {{ form_start(registrationForm) }}
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Colonne 1 -->
+            <div class="space-y-4 md:col-span-1">
+                {{ form_row(registrationForm.email, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500'}}) }}
+                {{ form_row(registrationForm.nom, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500'}}) }}
+                {{ form_row(registrationForm.prenom, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500'}}) }}
+            </div>
+
+            <!-- Ligne de séparation -->
+            <div class="hidden md:flex justify-center items-center">
+                <div class="h-4/5 w-px bg-gray-300"></div>
+            </div>
+
+            <!-- Colonne 2 -->
+            <div class="space-y-4 md:col-span-1">
+                {{ form_row(registrationForm.ville, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500'}}) }}
+                {{ form_row(registrationForm.telephone, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500'}}) }}
+                {{ form_row(registrationForm.cin, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500'}}) }}
+</div>
+        </div>
+
+        <div class="mt-6">
+            {{ form_row(registrationForm.adresse, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500'}}) }}
+            {{ form_row(registrationForm.plainPassword, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500'}}) }}
+        </div>
+
+        <div class="mt-6 text-center">
+            <button type="submit"
+                    class="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition">
+                S'inscrire
+            </button>
+        </div>
+
+        {{ form_end(registrationForm) }}
+
+        <!-- Lien de connexion -->
+        <p class="mt-4 text-center text-sm text-gray-600">
+            Vous avez déjà un compte ?
+            <a href="{{ path('app_client_login') }}" class="text-green-600 hover:underline">Connectez-vous</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

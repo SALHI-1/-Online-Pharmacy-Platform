@@ -1,0 +1,59 @@
+{% extends 'homeClientBase.html.twig' %}
+
+{% block title %}Modifier mon profil{% endblock %}
+
+{% block body %}
+<div class="max-w-4xl mx-auto mt-10 p-8 bg-white shadow-lg rounded-lg">
+    <h1 class="text-4xl font-bold text-center text-gray-800 mb-6">Modifier votre profil</h1>
+
+    
+
+    {{ form_start(form, {attr: {class: "space-y-6"}}) }}
+        <div class="grid grid-cols-2 gap-8">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-1">{{ form_label(form.email) }}</label>
+                    {{ form_widget(form.email, {attr: {class: "w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300"}}) }}
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-1">{{ form_label(form.nom) }}</label>
+                    {{ form_widget(form.nom, {attr: {class: "w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300"}}) }}
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-1">{{ form_label(form.prenom) }}</label>
+                    {{ form_widget(form.prenom, {attr: {class: "w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300"}}) }}
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-1">{{ form_label(form.ville) }}</label>
+                    {{ form_widget(form.ville, {attr: {class: "w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300"}}) }}
+                </div>
+                
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-1">{{ form_label(form.adresse) }}</label>
+                    {{ form_widget(form.adresse, {attr: {class: "w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300"}}) }}
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-1">{{ form_label(form.telephone) }}</label>
+                    {{ form_widget(form.telephone, {attr: {class: "w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300"}}) }}
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-1">{{ form_label(form.cin) }}</label>
+                    {{ form_widget(form.cin, {attr: {class: "w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300"}}) }}
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-1">{{ form_label(form.password) }}</label>
+                    {{ form_widget(form.password, {attr: {class: "w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300"}}) }}
+                </div>
+            </div>
+            
+        </div>
+        <div class="mt-6 justify-center  text-center">
+                    {{ form_widget(form.save, {attr: {class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition"}}) }}
+                </div>
+    {{ form_end(form) }}
+
+</div>
+{% endblock %}

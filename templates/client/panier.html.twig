@@ -1,0 +1,40 @@
+{% extends 'homeClientBase.html.twig' %}
+
+{% block body %}
+    <div class="container mx-auto mt-6 p-6 bg-white shadow-lg rounded-lg">
+        <h2 class="text-2xl font-bold text-blue-600 mb-4">Votre Panier</h2>
+
+        {% if panier is empty %}
+            <p class="text-gray-600">Votre panier est vide.</p>
+        {% else %}
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="border-b">
+                        <th class="p-3">Médicament</th>
+                        <th class="p-3">Quantité</th>
+                        <th class="p-3">Prix</th>
+                        <th class="p-3">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in panier %}
+                        <tr class="border-b">
+                            <td class="p-3">{{ item.medicament.nom }}</td>
+                            <td class="p-3">{{ item.quantite }}</td>
+                            <td class="p-3">{{ item.medicament.prix * item.quantite }} €</td>
+                            <td class="p-3">
+                                <a href="{{ path('app_panier_supprimer', {id: item.medicament.id}) }}" 
+                                   class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Supprimer</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <p class="text-lg font-semibold mt-4 mb-4 ">Total: {{ total }} €</p>
+
+            <a href="{{ path('app_panier_vider') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mt-4">Vider le Panier</a>
+            <a href="{{ path('app_commande_confirmer') }}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mt-4">Confirmer l'Achat</a>
+        {% endif %}
+    </div>
+{% endblock %}

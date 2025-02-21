@@ -1,0 +1,45 @@
+{% extends 'homeAdminBase.html.twig' %}
+
+{% block body %}
+    <div class="container mx-auto p-6">
+    <h1 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Commandes Spéciales en Attente</h1>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+            <thead class="bg-green-500 text-white">
+                <tr>
+                    <th class="py-3 px-4 text-left">Client</th>
+                    <th class="py-3 px-4 text-left">Email</th>
+                    <th class="py-3 px-4 text-left">Médicament</th>
+                    <th class="py-3 px-4 text-left">Quantité</th>
+                    <th class="py-3 px-4 text-left">Attestation</th>
+                    <th class="py-3 px-4 text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for commandeSpec in commandesSpeciales %}
+                    <tr class="border-b hover:bg-gray-100">
+                        <td class="py-3 px-4">{{ commandeSpec.commande.client.nom }} {{ commandeSpec.commande.client.prenom }}</td>
+                        <td class="py-3 px-4">{{ commandeSpec.commande.client.email }}</td>
+                        <td class="py-3 px-4">{{ commandeSpec.commande.medicament.nom }}</td>
+                        <td class="py-3 px-4 text-center">{{ commandeSpec.commande.quantite }}</td>
+<td class="py-3 px-4">
+    <a href="{{ asset('uploads/attestations/' ~ commandeSpec.attestationMedicale) }}" class="text-blue-500 underline" target="_blank">
+    Télécharger
+</a>
+</td>
+                        <td class="py-3 px-4 flex justify-center space-x-2">
+                            <form method="post" action="{{ path('admin_gerer_commande', {id: commandeSpec.id, action: 'accepter'}) }}">
+                                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Accepter</button>
+                            </form>
+                            <form method="post" action="{{ path('admin_gerer_commande', {id: commandeSpec.id, action: 'refuser'}) }}">
+                                <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Refuser</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

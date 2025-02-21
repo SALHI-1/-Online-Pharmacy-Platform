@@ -1,0 +1,6 @@
+body {
+    background-color: skyblue;
+}
+@import "tailwind base";
+@import "ttailwind components";
+@import "tailwind utilities";

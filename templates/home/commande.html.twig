@@ -1,0 +1,183 @@
+
+{% extends 'homeAdminBase.html.twig' %}
+
+{% block title %} Home {% endblock %}
+
+
+
+{% block body %}
+<div id="notification" class="fixed top-4 right-4 p-4 rounded shadow-lg hidden"></div>
+
+
+    <div class="container mx-auto p-6">
+    <h2 class="text-2xl font-bold mb-4">Gestion des Commandes</h2>
+
+    <!-- Formulaire de recherche -->
+<form method="get" action="{{ path('app_commande') }}" class="mb-6 flex justify-between flex-wrap items-end gap-4 bg-white p-4 rounded-lg shadow-md">
+    
+   <div class="flex space-x-4"> 
+    <!-- Sélection du type -->
+    <div class="w-full sm:w-auto">
+        <label class="block text-gray-700 font-medium mb-1">Type :</label>
+        <select name="type" class="border border-gray-300 rounded-lg px-3 py-2 w-full focus:ring-2 focus:ring-blue-400">
+            <option value="">Tous</option>
+            <option value="Prescription obligatoire" {% if type == 'Prescription obligatoire' %}selected{% endif %}>Prescription obligatoire</option>
+            <option value="En vente libre" {% if type == 'En vente libre' %}selected{% endif %}>En vente libre</option>
+        </select>
+    </div>
+
+    <!-- Sélection de la date -->
+    <div class="w-full sm:w-auto">
+        <label class="block text-gray-700 font-medium mb-1">Date :</label>
+        <input type="date" name="date" value="{{ date }}" class="border border-gray-300 rounded-lg px-3 py-2 w-full focus:ring-2 focus:ring-blue-400">
+    </div>
+   </div>
+
+    <!-- Bouton de recherche -->
+    <div class="w-full sm:w-auto">
+        <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 transition duration-300 w-full sm:w-auto">
+            🔍 Rechercher
+        </button>
+    </div>
+
+</form>
+
+
+    <hr class="mb-6">
+
+    <!-- Tableau des commandes -->
+    <div class="overflow-x-auto">
+        <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-4 py-2 border">ID</th>
+                    <th class="px-4 py-2 border">Client</th>
+                    <th class="px-4 py-2 border">Médicament</th>
+                    <th class="px-4 py-2 border">Type</th>
+                    <th class="px-4 py-2 border">Quantité</th>
+                    <th class="px-4 py-2 border">Date</th>
+                    <th class="px-4 py-2 border">Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for commande in commandes %}
+                    <tr class="border-b hover:bg-gray-100">
+                        <td class="px-4 py-2 border">{{ commande.id }}</td>
+                        <td class="px-4 py-2 border">{{ commande.client.nom }} {{ commande.client.prenom }}</td>
+                        <td class="px-4 py-2 border">{{ commande.medicament.nom }}</td>
+                        <td class="px-4 py-2 border">{{ commande.medicament.type }}</td>
+                        <td class="px-4 py-2 border">{{ commande.quantite }}</td>
+                        <td class="px-4 py-2 border">{{ commande.date|date('Y-m-d H:i') }}</td>
+                        <td class="px-4 py-2 border">
+                            <select class="status-select border p-1 rounded" 
+                                    data-id="{{ commande.id }}"
+                                    data-initial-status="{{ commande.statut }}">
+                                <option value="En cours" {% if commande.statut == 'En cours' %}selected{% endif %}>En cours</option>
+                                <option value="Reçu" {% if commande.statut == 'Reçu' %}selected{% endif %}>Reçu</option>
+                                <option value="Pas reçue" {% if commande.statut == 'Pas reçue' %}selected{% endif %}>Pas reçue</option>
+                                <option value="Annulé" {% if commande.statut == 'Annulé' %}selected{% endif %}>Annulé</option>
+                            </select>
+                        </td>                  
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center px-4 py-2 border">Aucune commande trouvée.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+   <!-- Pagination -->
+<div class="mt-6 flex justify-center">
+    {% if commandes.pageCount > 1 %}
+        <nav class="flex space-x-2">
+            {% if commandes.currentPageNumber > 1 %}
+                <a href="{{ path('app_commande', {'page': commandes.currentPageNumber - 1}) }}" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Précédent</a>
+            {% endif %}
+
+            {% for i in 1..commandes.pageCount %}
+                <a href="{{ path('app_commande', {'page': i}) }}" class="px-4 py-2 rounded {% if i == commandes.currentPageNumber %}bg-blue-500 text-white{% else %}bg-gray-200 hover:bg-gray-300{% endif %}">{{ i }}</a>
+            {% endfor %}
+
+            {% if commandes.currentPageNumber < commandes.pageCount %}
+                <a href="{{ path('app_commande', {'page': commandes.currentPageNumber + 1}) }}" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Suivant</a>
+            {% endif %}
+        </nav>
+    {% endif %}
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const csrfToken = "{{ csrf_token('update-statut') }}";
+    const notification = document.getElementById('notification');
+
+    function showNotification(message, isSuccess) {
+    notification.innerHTML = `
+        <div class="flex items-center space-x-2">
+            <span class="text-xl">
+                ${isSuccess ? '✅' : '❌'}
+            </span>
+            <span>${message}</span>
+        </div>
+    `;
+
+    notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-xl text-white transition-opacity duration-300 opacity-0 
+        ${isSuccess ? 'bg-green-600 from-green-500 to-green-700' : 'bg-gradient-to-r from-red-500 to-red-700'}`;
+    
+    notification.style.display = 'block';
+
+    // Ajoute une légère animation d'apparition
+    setTimeout(() => {
+        notification.style.opacity = '1';
+    }, 100);
+
+    // Fait disparaître la notification après 3 secondes avec une animation fluide
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => { notification.style.display = 'none'; }, 300);
+    }, 3000);
+}
+
+
+    document.querySelectorAll('.status-select').forEach(select => {
+        const initialStatus = select.dataset.initialStatus;
+        
+        select.addEventListener('change', async function() {
+            const commandeId = this.dataset.id;
+            const nouveauStatut = this.value;
+            const selectElement = this;
+
+            try {
+                const response = await fetch('{{ path('app_commande_update_statut') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        id: commandeId,
+                        statut: nouveauStatut
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showNotification('Statut mis à jour avec succès', true);
+                    selectElement.dataset.initialStatus = nouveauStatut;
+                } else {
+                    showNotification(data.message || 'Erreur lors de la mise à jour', false);
+                    selectElement.value = initialStatus; // Revenir à l'état initial
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                showNotification('Erreur de connexion', false);
+                selectElement.value = initialStatus; // Revenir à l'état initial
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}

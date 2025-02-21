@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+       <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% endblock %}
+    </head>
+    <body>
+
+<body class="bg-gray-100">
+
+    
+
+    <div class="flex h-screen">
+         <!-- Sidebar Dashboard -->
+    <aside class="fixed w-64 bg-green-700 text-white h-full p-5 flex flex-col justify-between">
+    <!-- Header -->
+    <div>
+        <h2 class="text-2xl font-bold text-white mb-8">Dashboard</h2>
+        <nav class="flex flex-col space-y-4">
+            <ul class="space-y-2">
+                <li><a href="{{ path('app_medicament') }}" class="block p-3 hover:bg-green-800 rounded-lg transition">Produits</a></li>
+                <li><a href="{{ path('app_commande') }}" class="block p-3 hover:bg-green-800 rounded-lg transition">Commandes</a></li>
+                <li><a href="{{ path('app_commandes_speciales') }}" class="block p-3 hover:bg-green-800 rounded-lg transition">Commandes spéciales</a></li>
+                <li><a href="#" class="block p-3 hover:bg-green-800 rounded-lg transition">Profile</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Logout Form -->
+    <div class="mt-auto">
+        <form action="{{ path('app_logout') }}" method="post" class="mt-8">
+            <button type="submit" class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-900 transition">Se déconnecter</button>
+        </form>
+    </div>
+</aside>
+
+
+    <!-- Main Content -->
+    <main class="ms-64 flex-1 bg-gray-100">
+        <!-- Header avec Logo -->
+        <header class="bg-white shadow-md p-4 flex justify-between items-center">
+            <div>
+                <img src="{{ asset('images/pharmacie_img.png') }}" alt="Logo Pharmacie" class="h-12 w-auto cursor-pointer transition-transform transform hover:scale-110" />
+            </div>
+            <h1 class="text-green-700 text-3xl font-extrabold tracking-wide uppercase bg-gradient-to-r from-green-600 to-green-300 p-4 rounded-lg shadow-lg text-center">
+                🌿 Pharmacie EL NOUR 🌿</h1>
+
+            <h1 class="text-green-700 text-lg font-semibold">Administration</h1>
+        </header>
+
+         <!-- Contenu de la page -->
+        <main class="flex-1 p-6">
+            {% block body %}{% endblock %}
+        </main>
+    </div>
+    </body>
+</html>

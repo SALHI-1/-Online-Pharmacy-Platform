@@ -10,9 +10,9 @@ This is a Symfony-based web application that allows customers to order medicatio
 - Account registration and login
 - Browse available medications
 - Place two types of orders:
-  - ✅ **Normal Order**: for over-the-counter medicines
-  - ⚠️ **Special Order**: requires uploading a medical certificate
-- Track order status and history
+  - ✅ **Normal Order** 
+  - ⚠️ **Special Order** ( requires uploading a medical certificate  )
+
 
 ### 🧑‍⚕️ Admin Panel
 - Manage medication inventory (add, update, delete)
@@ -41,7 +41,6 @@ The main tables used:
 - `commande_spec`: special orders with medical certificate
 - `messenger_messages`: used for async email sending
 
-> You can view the full schema in [`pharmacie1.sql`](pharmacie1.sql)
 
 ---
 

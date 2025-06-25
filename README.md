@@ -76,7 +76,7 @@ To use it:
 MAILER_DSN=smtp://smtp.mailtrap.io:2525?encryption=tls&auth_mode=login&username=your_user&password=your_password
 
 ## 👤 Author
-[Send me an email](https://mail.google.com/mail/?view=cm&fs=1&to=mohammedsalhisam@gmail.com&su=Hello)
+[Send me an email](https://mail.google.com/mail/?view=cm&fs=1&to=mohammedsalhisam@gmail.com&su=Inquiry%20about%20the%20Online%20Pharmacy%20Platform)
 
 
 

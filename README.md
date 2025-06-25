@@ -76,7 +76,7 @@ To use it:
 MAILER_DSN=smtp://smtp.mailtrap.io:2525?encryption=tls&auth_mode=login&username=your_user&password=your_password
 
 ## 👤 Author
-**Mohammed Salhi** - [Contact me](mailto:mohammedsalhisam@gmail.com?subject=Inquiry%20about%20the%20Online%20Pharmacy%20Platform)
+[Contact me](mailto:mohammedsalhisam@gmail.com?subject=Inquiry%20about%20the%20Online%20Pharmacy%20Platform)
 
 
 

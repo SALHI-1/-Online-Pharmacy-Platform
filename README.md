@@ -82,4 +82,8 @@ MAILER_DSN=smtp://smtp.mailtrap.io:2525?encryption=tls&auth_mode=login&username=
 ![Admin - Medicament management](public/images/Admin_Medicaments.jpg)
 ![Admin - Login ](public/images/Admin_Login.jpg)
 
+## 👤 Author
+**Mohammed Salhi** - [mohammedsalhisam@gmail.com](mailto:mohammedsalhisam@gmail.com)
+
+
 

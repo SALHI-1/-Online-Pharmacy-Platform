@@ -75,6 +75,10 @@ To use it:
 
 MAILER_DSN=smtp://smtp.mailtrap.io:2525?encryption=tls&auth_mode=login&username=your_user&password=your_password
 
+## 👤 Author
+[Send me an email](https://mail.google.com/mail/?view=cm&fs=1&to=mohammedsalhisam@gmail.com&su=Hello)
+
+
 ## 📸Screenshots : 
 ![Client - Homepage](public/images/Client_Home.jpg)
 ![Client - Storepage](public/images/Client_Store.jpg)
@@ -82,8 +86,6 @@ MAILER_DSN=smtp://smtp.mailtrap.io:2525?encryption=tls&auth_mode=login&username=
 ![Admin - Medicament management](public/images/Admin_Medicaments.jpg)
 ![Admin - Login ](public/images/Admin_Login.jpg)
 
-## 👤 Author
-**Mohammed Salhi** - [mohammedsalhisam@gmail.com](mailto:mohammedsalhisam@gmail.com)
 
 
 
